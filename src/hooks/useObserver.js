@@ -1,0 +1,18 @@
+import { useRef } from "react";
+import { useEffect } from "react";
+export const useObserver = (ref, canLoad, isLoading, callback) => {
+  const observer = useRef();
+  useEffect(() => {
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
+    let cb = function (entries, observer) {
+      if (entries[0].isIntersecting && canLoad) {
+        callback();
+      }
+    };
+
+    observer.current = new IntersectionObserver(cb);
+    observer.current.observe(ref.current);
+  }, [isLoading]);
+  //useRef используеться не только для доступа к DOM элементу, также в него можна сохранять данные чтобы не терять их от рендера к рендеру
+};
